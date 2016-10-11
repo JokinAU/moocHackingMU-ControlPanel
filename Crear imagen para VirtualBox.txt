@@ -1,0 +1,98 @@
+#bY JokinAU@EnigmaDOS 2016/10
+
+Iniciamos sesión en el servidor virtual privado (VPS) para obtener la información necesaria
+$ ssh root@45.55.94.186
+The authenticity of host '45.55.94.186 (45.55.94.186)' can't be established.
+ECDSA key fingerprint is SHA256:m1OzgiUkKVhJtRBdN4Yle08o1ThKAYIL8pkmlwu+I5U.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '45.55.94.186' (ECDSA) to the list of known hosts.
+root@45.55.94.186's password: 
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Wed Sep 28 09:43:38 2016 from 1.2-3-4.mindyourbusiness.net
+root@team-0012:~# echo JokinAU@EnigmaDOS empieza aquí, todo lo anterior es... suscept to analysis!
+JokinAU@EnigmaDOS empieza aquí, todo lo anterior es... suscept to analysis!
+root@team-0012:~# cat /etc/fstab
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/sda2 during installation
+LABEL=DOROOT    /               ext4    errors=remount-ro 0       1
+/dev/sr0        /media/cdrom0   udf,iso9660 user,noauto     0       0
+root@team-0012:~# free -h
+             total       used       free     shared    buffers     cached
+Mem:          500M       479M        20M       7.8M       336M        68M
+-/+ buffers/cache:        74M       425M
+Swap:           0B         0B         0B
+root@team-0012:~# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1        20G  1.3G   18G   7% /
+udev             10M     0   10M   0% /dev
+tmpfs           101M  312K  100M   1% /run
+tmpfs           251M     0  251M   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs           251M     0  251M   0% /sys/fs/cgroup
+root@team-0012:~# lsblk
+NAME    MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+vda     254:0    0  20G  0 disk 
+|-vda1  254:1    0  20G  0 part /
+`-vda15 254:15   0   1M  0 part 
+root@team-0012:~# exit
+
+
+Ahora, en nuestro linux lanzamos el comando que se conecta al VPS y hace una imagen remota guardándola EN LOCAL (tardará un poco, 563MB)
+JokinAU@ubuntu:~# ssh root@45.55.94.186 "dd if=/dev/vda | gzip -c" | dd of=vda.img.gz
+root@45.55.94.186's password:
+41936896+0 records in
+41936896+0 records out
+21471690752 bytes (21 GB) copied, 388.289 s, 55.3 MB/s
+1100101+1 records in
+1100101+1 records out
+563252108 bytes (563 MB, 537 MiB) copied, 392,82 s, 1,4 MB/s
+
+En local descomprimimos la imágen
+~# gunzip -c vda.img.gz > vda.img
+Y la convertimos en el formato adecuado para virtualbox
+~# VBoxManage convertfromraw vda.img vda.vhd --format VHD
+
+Abrimos VirtualBox y creamos la máquina virtual(Linux Debian 32 bits, 512MB RAM), y le añadimos como disco duro el que hemos creado en el paso anterior.
+Descargamos Super Grub Disk2 desde su web http://www.supergrubdisk.org/category/download/supergrub2diskdownload/super-grub2-disk-stable/ y lo conectamos en VirtualBox.
+Arrancamos la máquina virtual, y Super Grub Disk2 nos permitirá arrancar la máquina completamente, para reinstalar GRUB.
+Iniciamos sesión en la máquina virtual con root y la contraseña que tenga, y entonces ejecutamos en ella:
+~# sudo grub-install --force /dev/sda
+~# sudo update-grub
+
+Apagamos el host, desmontamos el CD, y lo arrancamos normal!!
+
+
+Lo básico ya está listo, pero podemos configurar algunas cosas útiles:
+
+Nos logeamos, y reconfiguramos el teclado
+~# dpkg-reconfigure keyboard-configuration
+~# service keyboard-setup restart
+
+Ajustamos la zona horarioa
+~# dpkg-reconfigure tzdata
+
+Ajustamos el editor por defecto (nano?)
+~# select-editor
+
+Deshabilitamos el script que comprueba el systema y lo manda por email, precediendo sus líneas del símbolo de comentario (#):
+~# nano /etc/cron.d/check-integrity
+
+ajustamos la red poniéndolo como dhcp (comentar lo que tenga referente a eth0, y le añadimos las tres líneas):
+~# nano /etc/netwok/interfaces
+	auto eth0
+	allow-hotplug eth0
+	iface eth0 inet dhcp
+
+~# /etc/init.d/networking restart
