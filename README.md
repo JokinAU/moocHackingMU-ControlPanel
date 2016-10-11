@@ -3,6 +3,8 @@ Panel de control para la gestión guiada de los ataques del MOOC Hacking Ético 
 
 Este pequeño proyecto es más un PoC, publicación quick and dirty y primera experiencia con github que otra cosa, así que perdón por el lio, el código sin comentar, el diseño (o su falta) tan espartano y retro (frames?)...
 
+Solo hace falta un pequeño servidor web que soporte PHP. Testado sobre Ubuntu 16.04.1 LTS 64 bits y el propio Debian 32 bits del curso
+
 Pero por otro lado espero que alguien pueda apreciar que se haya publicado esto, ya que pueden ver UNA línea de ataque, elementos concretos y resultados reales. Hay muchas formas (y seguro que mejores) de realizar cada paso, así que cualquier aportación será muy bienvenida. Animaos!
 
 Además de este repositorio, podéis obtener una copia de nuestro servidor (team 12: EnigmaDOS) Debian 32 bits clonado los primeros días del curso (560MB), y preparado para ser ejecutado en https://www.virtualbox.org/ bajo Windows o Linux:
