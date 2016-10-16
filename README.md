@@ -16,3 +16,5 @@ Está preparado para ser ejecutado en https://www.virtualbox.org/ 5 bajo Windows
 http://focus27.com/EnigmaDOS/vps3.ova (Mirror: https://drive.google.com/file/d/0B74Xf6qaQ1U-SnJ1Q3Rpa2FUQlk/view?usp=sharing)
 Está configurado con red DHCP a la red real, teclado español, zona horaria española... Pero poco más, no está protegido de ninguna forma.
 Para acceder: root / EnigmaDOS
+
+Si alguien está interesado en el blog donde publiqué mi progreso en el curso, visitad https://jokinau.theollys.com/blog/
